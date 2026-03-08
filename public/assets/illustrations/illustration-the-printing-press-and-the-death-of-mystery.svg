@@ -1,0 +1,7 @@
+<svg width="1050" height="450" viewBox="0 0 1050 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1050" height="450" fill="#FBFBFB"/>
+    <rect x="450" y="150" width="150" height="200" stroke="#1C1C1E" stroke-width="1" opacity="0.3"/>
+    <path d="M475 180H575M475 210H575M475 240H575M475 270H575" stroke="#1C1C1E" stroke-width="0.5" opacity="0.2"/>
+    <circle cx="525" cy="310" r="10" stroke="#1C1C1E" stroke-width="1" opacity="0.4"/>
+    <text x="525" y="380" text-anchor="middle" font-family="Inter" font-size="10" letter-spacing="0.5em" fill="#1C1C1E" opacity="0.4">PRINTING PRESS</text>
+</svg>

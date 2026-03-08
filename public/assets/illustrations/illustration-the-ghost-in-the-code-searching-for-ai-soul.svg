@@ -1,0 +1,7 @@
+<svg width="1050" height="450" viewBox="0 0 1050 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1050" height="450" fill="#FBFBFB"/>
+    <path d="M425 225C425 170 470 125 525 125C580 125 625 170 625 225" stroke="#1C1C1E" stroke-width="1" opacity="0.4"/>
+    <rect x="425" y="225" width="200" height="100" stroke="#1C1C1E" stroke-width="1" opacity="0.4"/>
+    <path d="M450 250L475 275L450 300" stroke="#1C1C1E" stroke-width="1" opacity="0.3"/>
+    <text x="525" y="360" text-anchor="middle" font-family="Inter" font-size="10" letter-spacing="0.5em" fill="#1C1C1E" opacity="0.4">GHOST IN THE CODE</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg width="1050" height="450" viewBox="0 0 1050 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1050" height="450" fill="#FBFBFB"/>
+    <path d="M200 225C300 225 400 100 525 225C650 350 750 225 850 225" stroke="#1C1C1E" stroke-width="1" opacity="0.3"/>
+    <circle cx="200" cy="225" r="4" fill="#1C1C1E" opacity="0.4"/>
+    <circle cx="525" cy="225" r="4" fill="#1C1C1E" opacity="0.4"/>
+    <circle cx="850" cy="225" r="4" fill="#1C1C1E" opacity="0.4"/>
+    <text x="525" y="320" text-anchor="middle" font-family="Inter" font-size="10" letter-spacing="0.5em" fill="#1C1C1E" opacity="0.4">SILK AND STONE</text>
+</svg>
