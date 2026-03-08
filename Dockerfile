@@ -39,11 +39,14 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader -vvv
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Use the PORT environment variable provided by Cloud Run
-RUN sed -i 's/80/${PORT}/g' /etc/apache2/ports.conf /etc/apache2/sites-available/*.conf
+# Update Apache to listen on port 8080 (Cloud Run default)
+RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/*.conf
 
-# Expose port (Cloud Run sets PORT env var)
+# Expose port
 EXPOSE 8080
 
-# Start Apache
-CMD ["apache2-foreground"]
+# Make start script executable
+RUN chmod +x /var/www/html/start.sh
+
+# Start with our custom script to handle migrations automatically
+ENTRYPOINT ["/var/www/html/start.sh"]
