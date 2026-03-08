@@ -10,11 +10,13 @@ RUN apt-get update && apt-get install -y \
     libicu-dev \
     libxml2-dev \
     libsqlite3-dev \
+    libonig-dev \
+    libcurl4-openssl-dev \
     zip \
     unzip \
     git \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_sqlite pdo_mysql bcmath zip intl
+    && docker-php-ext-install gd pdo pdo_sqlite pdo_mysql bcmath zip intl exif pcntl opcache
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -32,7 +34,7 @@ COPY . .
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-RUN composer install --no-interaction --no-dev --optimize-autoloader
+RUN composer install --no-interaction --no-dev --optimize-autoloader -vvv
 
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
