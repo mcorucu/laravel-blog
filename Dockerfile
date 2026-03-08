@@ -39,8 +39,9 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader -vvv
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Update Apache to listen on port 8080 (Cloud Run default)
-RUN sed -i 's/80/8080/g' /etc/apache2/ports.conf /etc/apache2/sites-available/*.conf
+# Update Apache to listen on the dynamic PORT provided by Cloud Run
+RUN sed -i 's/Listen 80/Listen ${PORT}/g' /etc/apache2/ports.conf
+RUN sed -i 's/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/g' /etc/apache2/sites-available/*.conf
 
 # Expose port
 EXPOSE 8080
