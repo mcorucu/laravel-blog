@@ -15,9 +15,13 @@ return Application::configure(basePath: dirname(__DIR__))
         \App\Providers\Filament\AdminPanelProvider::class,
     ])
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->trustProxies(at: '*');
     })
     ->booted(function () {
+        if (config('app.env') === 'production') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         if (\Illuminate\Support\Facades\Schema::hasTable('settings')) {
             $settings = \App\Models\Setting::pluck('value', 'key')->toArray();
             \Illuminate\Support\Facades\View::share('settings', $settings);

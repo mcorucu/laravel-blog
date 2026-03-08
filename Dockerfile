@@ -45,7 +45,7 @@ RUN npm install
 RUN npm run build
 
 # Set permissions
-RUN chown -R www-data:www-data storage bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache public/build
 
 # Expose port (Cloud Run will set the actual port via environment variable)
 EXPOSE 8080
