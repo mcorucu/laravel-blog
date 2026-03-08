@@ -3,30 +3,37 @@
 # Configuration
 echo "--- Starting Application Startup Sequence ---"
 
-# The PORT environment variable is provided by Cloud Run.
+# The PORT environment variable is provided by Cloud Run at runtime.
 # We ensure Apache knows about it.
 export PORT=${PORT:-8080}
-echo "Listening on port: $PORT"
+echo "Detected Runtime Port: $PORT"
+
+# Dynamically update Apache configuration to listen on the correct port
+echo "Configuring Apache to listen on port $PORT..."
+sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf
+sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/g" /etc/apache2/sites-available/*.conf
 
 # Clear caches for production performance
-echo "Clearing caches..."
+echo "Clearing application caches..."
 php artisan config:clear
 php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
 
 # Run migrations (force for production)
-# We wrap this in a check to ensure the server starts even if DB is temporarily unreachable
 echo "Attempting to run database migrations..."
 if php artisan migrate --force; then
     echo "Migrations completed successfully! ✅"
 else
     echo "WARNING: Migrations failed or database is unreachable. ⚠️"
-    echo "The server will start anyway to allow debugging via the browser."
+    echo "Check your DB_SOCKET and DB_PASSWORD variables."
 fi
 
-# Set permissions one last time to be sure
+# Set permissions to ensure Apache can write to logs and storage
+echo "Setting file permissions..."
 chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
 
 # Start Apache in foreground
-# 'exec' ensures Apache receives termination signals properly
-echo "Launching Apache server..."
+echo "Launching Apache server on port $PORT..."
 exec apache2-foreground

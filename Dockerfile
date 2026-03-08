@@ -39,11 +39,7 @@ RUN composer install --no-interaction --no-dev --optimize-autoloader -vvv
 # Set permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 
-# Update Apache to listen on the dynamic PORT provided by Cloud Run
-RUN sed -i 's/Listen 80/Listen ${PORT}/g' /etc/apache2/ports.conf
-RUN sed -i 's/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/g' /etc/apache2/sites-available/*.conf
-
-# Expose port
+# Expose port (Cloud Run will set the actual port via environment variable)
 EXPOSE 8080
 
 # Make start script executable
