@@ -42,30 +42,7 @@ class Login extends BaseLogin
 
     public function authenticate(): \Filament\Http\Responses\Auth\Contracts\LoginResponse
     {
-        try {
-            // Manual reCAPTCHA validation
-            $recaptchaResponse = request()->input('g-recaptcha-response');
-            
-            if (!$recaptchaResponse) {
-               throw ValidationException::withMessages([
-                   'data.email' => __('The reCAPTCHA field is required.'),
-               ]);
-            }
-
-            // Using the biscolab/laravel-recaptcha validation
-            $validate = recaptcha()->verify($recaptchaResponse);
-            
-            if (!$validate->isSuccess()) {
-                throw ValidationException::withMessages([
-                    'data.email' => __('reCAPTCHA validation failed. Please try again.'),
-                ]);
-            }
-
-            return parent::authenticate();
-            
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        return parent::authenticate();
     }
 
     public function getView(): string
