@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "biscolab/laravel-recaptcha": "^6.1",
         "filament/filament": "^3.2",
         "google/cloud-storage": "^1.49",
         "intervention/image": "^3.11",

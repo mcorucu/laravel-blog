@@ -26,7 +26,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(\App\Filament\Pages\Auth\Login::class)
             ->brandLogo(asset('assets/branding/logo.svg'))
             ->brandLogoHeight('2.5rem')
             ->colors([

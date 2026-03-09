@@ -6,6 +6,17 @@
       'EloquentSerialize' => 'AnourValar\\EloquentSerialize\\Facades\\EloquentSerializeFacade',
     ),
   ),
+  'biscolab/laravel-recaptcha' => 
+  array (
+    'aliases' => 
+    array (
+      'ReCaptcha' => 'Biscolab\\ReCaptcha\\Facades\\ReCaptcha',
+    ),
+    'providers' => 
+    array (
+      0 => 'Biscolab\\ReCaptcha\\ReCaptchaServiceProvider',
+    ),
+  ),
   'blade-ui-kit/blade-heroicons' => 
   array (
     'providers' => 
