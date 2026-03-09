@@ -22,14 +22,14 @@ RUN apt-get update && apt-get install -y \
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
-
 # Update Apache config to serve Laravel public folder and allow overrides
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
+
+# Ensure mod_rewrite is active and .htaccess works
+RUN a2enmod rewrite
+RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 # Set working directory
 WORKDIR /var/www/html
@@ -46,7 +46,7 @@ RUN npm install
 RUN npm run build
 
 # Set permissions
-RUN chown -R www-data:www-data storage bootstrap/cache public/build
+RUN chown -R www-data:www-data /var/www/html
 
 # Expose port (Cloud Run will set the actual port via environment variable)
 EXPOSE 8080
