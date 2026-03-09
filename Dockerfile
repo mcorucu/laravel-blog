@@ -5,6 +5,7 @@ FROM php:8.4-apache
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
+    libwebp-dev \
     libfreetype6-dev \
     libzip-dev \
     libicu-dev \
@@ -15,14 +16,14 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install gd pdo pdo_sqlite pdo_mysql bcmath zip intl exif pcntl opcache
 
 # Set custom PHP upload limits
 RUN echo "upload_max_filesize=100M" > /usr/local/etc/php/conf.d/uploads.ini \
     && echo "post_max_size=110M" >> /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/uploads.ini \
-    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/uploads.ini
+    && echo "memory_limit=1G" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "max_execution_time=600" >> /usr/local/etc/php/conf.d/uploads.ini
 
 # Install Node.js and NPM for building assets
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
