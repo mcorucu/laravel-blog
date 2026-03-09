@@ -10,11 +10,11 @@
         </div>
 
         {{-- Login Form --}}
-        <x-filament-panels::form wire:submit="authenticate" class="w-full max-w-sm p-8 bg-white/80 backdrop-blur-xl border border-mn-gray/10 rounded-2xl shadow-2xl space-y-6">
+        <form wire:submit="authenticate" class="w-full max-w-sm p-10 bg-white/[0.03] backdrop-blur-2xl rounded-[2rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] space-y-8 animate-fade-in-up">
             {{ $this->form }}
 
             {{-- reCAPTCHA Widget --}}
-            <div class="flex justify-center py-2 scale-90 sm:scale-100">
+            <div class="flex justify-center py-4 scale-90 sm:scale-100 transition-all hover:scale-105">
                 {!! htmlFormSnippet() !!}
             </div>
 
@@ -22,7 +22,7 @@
                 :actions="$this->getFormActions()"
                 :full-width="$this->hasFullWidthFormActions()"
             />
-        </x-filament-panels::form>
+        </form>
 
         {{-- Footer Links --}}
         <div class="mt-8 text-center opacity-60 hover:opacity-100 transition-opacity">
