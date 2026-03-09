@@ -19,6 +19,12 @@ php artisan config:clear
 php artisan cache:clear
 php artisan view:clear
 php artisan route:clear
+php artisan storage:link
+
+# Ensure Livewire temporary upload directory exists
+mkdir -p storage/app/livewire-tmp
+chown -R www-data:www-data storage/app/livewire-tmp
+chmod -R 775 storage/app/livewire-tmp
 
 # Run migrations (force for production)
 echo "Attempting to run database migrations and seeders..."
