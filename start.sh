@@ -21,9 +21,9 @@ php artisan view:clear
 php artisan route:clear
 
 # Run migrations (force for production)
-echo "Attempting to run database migrations..."
-if php artisan migrate --force; then
-    echo "Migrations completed successfully! ✅"
+echo "Attempting to run database migrations and seeders..."
+if php artisan migrate --force --seed; then
+    echo "Migrations and Seeding completed successfully! ✅"
 else
     echo "WARNING: Migrations failed or database is unreachable. ⚠️"
     echo "Check your DB_SOCKET and DB_PASSWORD variables."

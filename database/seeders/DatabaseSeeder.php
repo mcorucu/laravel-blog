@@ -109,11 +109,13 @@ class DatabaseSeeder extends Seeder
             ],
         ];
 
-        \App\Models\User::create([
-            'name' => 'Admin',
-            'email' => 'admin@mn-blog.com',
-            'password' => bcrypt('password'),
-        ]);
+        \App\Models\User::updateOrCreate(
+            ['email' => 'mcorucu@mcorucu.com'],
+            [
+                'name' => 'mcorucu',
+                'password' => bcrypt('Ezgi*7891'),
+            ]
+        );
 
         $this->call([
             SettingSeeder::class,
