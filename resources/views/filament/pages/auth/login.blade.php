@@ -1,4 +1,4 @@
-<x-filament-panels::page.auth>
+<x-filament-panels::page.simple>
     <div class="flex flex-col items-center justify-center min-h-[400px]">
         {{-- Branding --}}
         <div class="mb-8 text-center animate-fade-in">
@@ -61,4 +61,4 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
-</x-filament-panels::page.auth>
+</x-filament-panels::page.simple>
