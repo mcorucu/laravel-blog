@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Models\Post;
-use App\Services\ImageService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -39,25 +38,6 @@ class PostResource extends Resource
                                     ->required()
                                     ->fileAttachmentsDirectory('posts/images')
                                     ->fileAttachmentsVisibility('public')
-                                    ->saveUploadedFileAttachmentsUsing(function ($file, Forms\Components\RichEditor $component) {
-                                        // 35MB check
-                                        if ($file->getSize() > 35 * 1024 * 1024) {
-                                            throw new \Exception('Attachment exceeds 35MB limit.');
-                                        }
-
-                                        $title = $component->getLivewire()->data['title'] ?? 'post';
-                                        
-                                        $imageService = new ImageService();
-                                        
-                                        $path = $imageService->processAndStore(
-                                            file: $file,
-                                            directory: 'posts/images',
-                                            title: $title,
-                                            width: 1200 // Max width for content images
-                                        );
-
-                                        return $imageService->getUrl($path);
-                                    })
                                     ->columnSpanFull(),
                             ]),
                         
@@ -88,24 +68,12 @@ class PostResource extends Resource
                                     ->image()
                                     ->maxSize(35840)
                                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/svg+xml'])
+                                    ->directory('posts/covers')
                                     ->visibility('public')
                                     ->imageEditor()
                                     ->openable()
                                     ->downloadable()
-                                    ->deletable()
-                                    ->saveUploadedFileUsing(function (Forms\Components\FileUpload $component, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile $file): string {
-                                        $title = $component->getLivewire()->data['title'] ?? 'post';
-                                        
-                                        $imageService = new ImageService();
-
-                                        return $imageService->processAndStore(
-                                            file: $file,
-                                            directory: 'posts/covers',
-                                            title: $title,
-                                            width: 1600, // Featured image size
-                                            height: 900 // Optional: fixed aspect ratio or just max height
-                                        );
-                                    }),
+                                    ->deletable(),
                                 Forms\Components\TextInput::make('featured_svg')
                                     ->helperText('Legacy illustration support'),
                             ]),
