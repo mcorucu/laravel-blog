@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
 use App\Models\Post;
+use App\Services\ImageService;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -39,29 +40,24 @@ class PostResource extends Resource
                                     ->fileAttachmentsDirectory('posts/images')
                                     ->fileAttachmentsVisibility('public')
                                     ->saveUploadedFileAttachmentsUsing(function ($file, Forms\Components\RichEditor $component) {
-                                        // 35MB check for attachments too
+                                        // 35MB check
                                         if ($file->getSize() > 35 * 1024 * 1024) {
                                             throw new \Exception('Attachment exceeds 35MB limit.');
                                         }
 
-                                        $extension = $file->getClientOriginalExtension();
                                         $title = $component->getLivewire()->data['title'] ?? 'post';
-                                        $slug = \Illuminate\Support\Str::slug($title);
-                                        $timestamp = time();
-                                        $filename = "{$slug}-{$timestamp}";
                                         
-                                        if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
-                                            $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-                                            $image = $manager->read($file->getRealPath());
-                                            $encoded = $image->toWebp(80);
-                                            
-                                            $finalName = "posts/images/{$filename}.webp";
-                                            \Illuminate\Support\Facades\Storage::disk('public')->put($finalName, (string) $encoded);
-                                            return \Illuminate\Support\Facades\Storage::disk('public')->url($finalName);
-                                        }
+                                        /** @var ImageService $imageService */
+                                        $imageService = app(ImageService::class);
+                                        
+                                        $path = $imageService->processAndStore(
+                                            file: $file,
+                                            directory: 'posts/images',
+                                            title: $title,
+                                            width: 1200 // Max width for content images
+                                        );
 
-                                        $path = $file->store('posts/images', 'public');
-                                        return \Illuminate\Support\Facades\Storage::disk('public')->url($path);
+                                        return $imageService->getUrl($path);
                                     })
                                     ->columnSpanFull(),
                             ]),
@@ -99,30 +95,18 @@ class PostResource extends Resource
                                     ->downloadable()
                                     ->deletable()
                                     ->saveUploadedFileUsing(function (Forms\Components\FileUpload $component, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile $file): string {
-                                        $extension = $file->getClientOriginalExtension();
                                         $title = $component->getLivewire()->data['title'] ?? 'post';
-                                        $slug = \Illuminate\Support\Str::slug($title);
-                                        $timestamp = time();
-                                        $filename = "{$slug}-{$timestamp}";
                                         
-                                        $directory = 'posts/covers';
-                                        
-                                        if (in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
-                                            $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-                                            $image = $manager->read($file->getRealPath());
-                                            $encoded = $image->toWebp(80);
-                                            
-                                            $finalName = "{$filename}.webp";
-                                            $fullPath = "{$directory}/{$finalName}";
-                                            \Illuminate\Support\Facades\Storage::disk('public')->put(
-                                                $fullPath,
-                                                (string) $encoded
-                                            );
-                                            return $fullPath;
-                                        }
+                                        /** @var ImageService $imageService */
+                                        $imageService = app(ImageService::class);
 
-                                        // Fallback for SVG or other allowed types
-                                        return $file->storeAs($directory, "{$filename}.{$extension}", 'public');
+                                        return $imageService->processAndStore(
+                                            file: $file,
+                                            directory: 'posts/covers',
+                                            title: $title,
+                                            width: 1600, // Featured image size
+                                            height: 900 // Optional: fixed aspect ratio or just max height
+                                        );
                                     }),
                                 Forms\Components\TextInput::make('featured_svg')
                                     ->helperText('Legacy illustration support'),
