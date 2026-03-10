@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
@@ -36,28 +37,41 @@ class ImageService
         ?int $height = null,
         int $quality = 80
     ): string {
-        $extension = strtolower($file->getClientOriginalExtension());
-        $filename = $this->generateFilename($title ?? 'image');
-        
-        // If it's a standard image format, process it with Intervention
-        if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
-            $image = $this->manager->read($file->getRealPath());
+        try {
+            $extension = strtolower($file->getClientOriginalExtension());
+            $filename = $this->generateFilename($title ?? 'image');
+            
+            // If it's a standard image format, process it with Intervention
+            if (in_array($extension, ['jpg', 'jpeg', 'png', 'webp'])) {
+                $image = $this->manager->read($file->getRealPath());
 
-            // Resize if dimensions are provided
-            if ($width || $height) {
-                $image->scale(width: $width, height: $height);
+                // Resize if dimensions are provided
+                if ($width || $height) {
+                    $image->scale(width: $width, height: $height);
+                }
+
+                $encoded = $image->toWebp($quality);
+                $path = "{$directory}/{$filename}.webp";
+                
+                Storage::disk('public')->put($path, $encoded->toStream());
+                
+                return $path;
             }
 
-            $encoded = $image->toWebp($quality);
-            $path = "{$directory}/{$filename}.webp";
+            // Fallback for SVG or other files
+            return $file->storeAs($directory, "{$filename}.{$extension}", 'public');
+        } catch (\Exception $e) {
+            Log::error("Image processing failed: " . $e->getMessage(), [
+                'exception' => $e,
+                'file' => $file->getClientOriginalName(),
+                'directory' => $directory
+            ]);
             
-            Storage::disk('public')->put($path, (string) $encoded);
-            
-            return $path;
+            // Fallback: store original file if processing fails
+            $extension = $file->getClientOriginalExtension();
+            $filename = $this->generateFilename($title ?? 'image_fallback');
+            return $file->storeAs($directory, "{$filename}.{$extension}", 'public');
         }
-
-        // Fallback for SVG or other files (store as is)
-        return $file->storeAs($directory, "{$filename}.{$extension}", 'public');
     }
 
     /**

@@ -47,8 +47,7 @@ class PostResource extends Resource
 
                                         $title = $component->getLivewire()->data['title'] ?? 'post';
                                         
-                                        /** @var ImageService $imageService */
-                                        $imageService = app(ImageService::class);
+                                        $imageService = new ImageService();
                                         
                                         $path = $imageService->processAndStore(
                                             file: $file,
@@ -97,8 +96,7 @@ class PostResource extends Resource
                                     ->saveUploadedFileUsing(function (Forms\Components\FileUpload $component, \Livewire\Features\SupportFileUploads\TemporaryUploadedFile $file): string {
                                         $title = $component->getLivewire()->data['title'] ?? 'post';
                                         
-                                        /** @var ImageService $imageService */
-                                        $imageService = app(ImageService::class);
+                                        $imageService = new ImageService();
 
                                         return $imageService->processAndStore(
                                             file: $file,
